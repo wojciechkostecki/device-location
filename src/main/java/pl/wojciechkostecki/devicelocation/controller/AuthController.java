@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.wojciechkostecki.devicelocation.exception.LoginAlreadyUsedException;
 import pl.wojciechkostecki.devicelocation.mapper.UserMapper;
 import pl.wojciechkostecki.devicelocation.model.dto.UserDTO;
 import pl.wojciechkostecki.devicelocation.repository.UserRepository;
@@ -27,11 +28,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@RequestBody UserDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new RuntimeException("There is a user with given login");
+            throw new LoginAlreadyUsedException("There is a user with given login");
         } else {
             userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             userRepository.save(userMapper.toEntity(userDTO));
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
-    }    
+    }
 }
