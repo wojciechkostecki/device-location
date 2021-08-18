@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wojciechkostecki.devicelocation.exception.LoginAlreadyUsedException;
 import pl.wojciechkostecki.devicelocation.mapper.UserMapper;
+import pl.wojciechkostecki.devicelocation.model.AppUser;
 import pl.wojciechkostecki.devicelocation.model.Role;
-import pl.wojciechkostecki.devicelocation.model.User;
 import pl.wojciechkostecki.devicelocation.model.dto.UserDTO;
 import pl.wojciechkostecki.devicelocation.repository.UserRepository;
 import pl.wojciechkostecki.devicelocation.repository.UserRoleRepository;
@@ -46,9 +46,9 @@ public class AuthController {
             throw new LoginAlreadyUsedException("There is a user with given login");
         } else {
             userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            User user = userMapper.toEntity(userDTO);
-            user.getRoles().add(userRoleRepository.findByName(Role.USER).get());
-            userRepository.save(user);
+            AppUser appUser = userMapper.toEntity(userDTO);
+            appUser.getRoles().add(userRoleRepository.findByName(Role.USER).get());
+            userRepository.save(appUser);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }

@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.wojciechkostecki.devicelocation.model.AppUser;
 import pl.wojciechkostecki.devicelocation.model.Role;
-import pl.wojciechkostecki.devicelocation.model.User;
 import pl.wojciechkostecki.devicelocation.model.UserRole;
 import pl.wojciechkostecki.devicelocation.repository.UserRepository;
 import pl.wojciechkostecki.devicelocation.repository.UserRoleRepository;
@@ -35,12 +35,12 @@ public class DeviceLocationApplication {
 
     private void saveAdmin() {
         if(!userRepository.findByUsername("admin").isPresent()) {
-            User user = new User();
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("admin"));
-            user.getRoles().add(userRoleRepository.findByName(Role.ADMIN).get());
-            user.getRoles().add(userRoleRepository.findByName(Role.USER).get());
-            userRepository.save(user);
+            AppUser appUser = new AppUser();
+            appUser.setUsername("admin");
+            appUser.setPassword(passwordEncoder.encode("admin"));
+            appUser.getRoles().add(userRoleRepository.findByName(Role.ADMIN).get());
+            appUser.getRoles().add(userRoleRepository.findByName(Role.USER).get());
+            userRepository.save(appUser);
         }
     }
 

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.wojciechkostecki.devicelocation.model.User;
+import pl.wojciechkostecki.devicelocation.model.AppUser;
 import pl.wojciechkostecki.devicelocation.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -25,19 +25,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(login)
+        AppUser appUser = userRepository.findByUsername(login)
                 .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found",login)));
-        return userToUserDetails(user);
+        return userToUserDetails(appUser);
     }
 
-    private UserDetails userToUserDetails(User user) {
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getUserAuthorities(user));
+    private UserDetails userToUserDetails(AppUser appUser) {
+        return new org.springframework.security.core.userdetails.User(appUser.getUsername(), appUser.getPassword(), getUserAuthorities(appUser));
     }
 
-    private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
+    private Collection<? extends GrantedAuthority> getUserAuthorities(AppUser appUser) {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        user.getRoles().forEach(role -> {authorities.add(new SimpleGrantedAuthority(role.getName().getValue()));});
+        appUser.getRoles().forEach(role -> {authorities.add(new SimpleGrantedAuthority(role.getName().getValue()));});
 
         return authorities;
     }
