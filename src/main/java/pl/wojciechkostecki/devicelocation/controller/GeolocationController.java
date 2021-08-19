@@ -11,6 +11,8 @@ import pl.wojciechkostecki.devicelocation.model.Geolocation;
 import pl.wojciechkostecki.devicelocation.model.dto.GeolocationDTO;
 import pl.wojciechkostecki.devicelocation.service.GeolocationService;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/api/geolocations")
 public class GeolocationController {
@@ -22,7 +24,7 @@ public class GeolocationController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Geolocation> saveGeolocation(@RequestBody GeolocationDTO geolocationDTO) {
+    public ResponseEntity<Geolocation> saveGeolocation(@Valid @RequestBody GeolocationDTO geolocationDTO) {
         Geolocation savedGeolocation = geolocationService.save(geolocationDTO);
         return new ResponseEntity<>(savedGeolocation, HttpStatus.CREATED);
     }

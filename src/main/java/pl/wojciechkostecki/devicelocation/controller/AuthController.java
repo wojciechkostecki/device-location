@@ -21,6 +21,8 @@ import pl.wojciechkostecki.devicelocation.repository.UserRepository;
 import pl.wojciechkostecki.devicelocation.repository.UserRoleRepository;
 import pl.wojciechkostecki.devicelocation.security.TokenUtil;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -41,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new LoginAlreadyUsedException("There is a user with given login");
         } else {
@@ -54,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody UserDTO request) {
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody UserDTO request) {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 

@@ -10,6 +10,7 @@ import pl.wojciechkostecki.devicelocation.model.Device;
 import pl.wojciechkostecki.devicelocation.model.dto.DeviceDTO;
 import pl.wojciechkostecki.devicelocation.service.DeviceService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class DeviceController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Device> createDevice(@RequestBody DeviceDTO deviceDTO) {
+    public ResponseEntity<Device> createDevice(@Valid @RequestBody DeviceDTO deviceDTO) {
         logger.debug("REST request to create Device: {}", deviceDTO);
         Device savedDevice = deviceService.save(deviceDTO);
         return new ResponseEntity<>(savedDevice, HttpStatus.CREATED);
@@ -47,7 +48,7 @@ public class DeviceController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Device> updateDevice(@PathVariable Long id, @RequestBody DeviceDTO deviceDTO) {
+    public ResponseEntity<Device> updateDevice(@PathVariable Long id, @Valid @RequestBody DeviceDTO deviceDTO) {
         logger.debug("REST request to update Device: {} with id {}", deviceDTO, id);
         return ResponseEntity.ok(deviceService.updateDevice(id, deviceDTO));
     }
