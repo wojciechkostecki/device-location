@@ -154,4 +154,22 @@ class DeviceControllerIT {
         assertThat(changedDevice.getModel()).isEqualTo("3310i");
     }
 
+    @Test
+    void deleteDeviceTest() throws Exception {
+        Device device = new Device();
+        device.setProducer("Apple");
+        device.setModel("Iphone X");
+        deviceRepository.save(device);
+
+        int dbSize = deviceRepository.findAll().size();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/devices/" + device.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        int dbSizeAfter = deviceRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize-1);
+    }
+
 }
