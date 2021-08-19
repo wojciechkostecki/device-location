@@ -56,10 +56,10 @@ class DeviceControllerIT {
 
         //then
         int dbSizeAfter = deviceRepository.findAll().size();
-        assertThat(dbSizeAfter).isEqualTo(dbSize+1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize + 1);
 
         Device savedDevice = deviceRepository.getById(objectMapper.readValue
-                (mvcResult.getResponse().getContentAsString(),Device.class).getId());
+                (mvcResult.getResponse().getContentAsString(), Device.class).getId());
 
         assertThat(savedDevice).isNotNull();
         assertThat(savedDevice.getProducer()).isEqualTo(deviceDTO.getProducer());
@@ -85,7 +85,7 @@ class DeviceControllerIT {
                 .andReturn();
 
         //then
-        Device[] devices = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Device[].class);
+        Device[] devices = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Device[].class);
         assertThat(devices).isNotNull();
         assertThat(devices).hasSize(2);
         assertThat(devices[0].getProducer()).isEqualTo(device.getProducer());
@@ -94,5 +94,28 @@ class DeviceControllerIT {
         assertThat(devices[1].getModel()).isEqualTo(device2.getModel());
     }
 
+    @Test
+    void getDeviceTest() throws Exception {
+        //given
+        Device newDevice = new Device();
+        newDevice.setProducer("Apple");
+        newDevice.setModel("Iphone 8");
+        deviceRepository.save(newDevice);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/devices/" + newDevice.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andReturn();
+
+        //then
+        Device device = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Device.class);
+        assertThat(device).isNotNull();
+        assertThat(device.getId()).isEqualTo(newDevice.getId());
+        assertThat(device.getProducer()).isEqualTo(newDevice.getProducer());
+        assertThat(device.getModel()).isEqualTo(newDevice.getModel());
+        assertThat(device.getProducer()).isEqualTo("Apple");
+        assertThat(device.getModel()).isEqualTo("Iphone 8");
+    }
 
 }
