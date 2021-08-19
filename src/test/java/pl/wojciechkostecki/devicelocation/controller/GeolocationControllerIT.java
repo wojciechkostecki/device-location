@@ -78,5 +78,30 @@ class GeolocationControllerIT {
         assertThat(savedGeolocation.getLongitude()).isEqualTo(geolocationDTO.getLongitude());
         assertThat(savedGeolocation.getDevice()).isEqualTo(device);
     }
-    
+
+    @Test
+    void saveGeolocationWhenTheDeviceCannotBeFoundTest() throws Exception {
+        //given
+        GeolocationDTO geolocationDTO = new GeolocationDTO();
+        geolocationDTO.setLatitude(44.23425);
+        geolocationDTO.setLongitude(23.24285);
+        geolocationDTO.setDeviceId(3L);
+
+        int dbSize = geolocationRepository.findAll().size();
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/geolocations")
+                        .content(objectMapper.writeValueAsString(geolocationDTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
+                .andExpect(result -> Assertions.assertEquals("Couldn't find a Device with passed id",
+                        result.getResolvedException().getMessage()));
+
+        //then
+        int dbSizeAfter = geolocationRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize);
+    }
 }
