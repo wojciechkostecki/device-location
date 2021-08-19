@@ -118,4 +118,40 @@ class DeviceControllerIT {
         assertThat(device.getModel()).isEqualTo("Iphone 8");
     }
 
+    @Test
+    void updateDeviceTest() throws Exception {
+        //given
+        Device device = new Device();
+        device.setProducer("Apple");
+        device.setModel("Iphone X");
+        deviceRepository.save(device);
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/devices/" + device.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andReturn();
+
+        Device originalDevice = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Device.class);
+        assertThat(originalDevice.getId()).isEqualTo(device.getId());
+        assertThat(originalDevice.getProducer()).isEqualTo(device.getProducer());
+        assertThat(originalDevice.getModel()).isEqualTo(device.getModel());
+
+        originalDevice.setProducer("Nokia");
+        originalDevice.setModel("3310i");
+
+        //when
+        MvcResult mvcResultAfterUpdate =mockMvc.perform(MockMvcRequestBuilders.put("/api/devices/" + device.getId())
+                        .content(objectMapper.writeValueAsString(originalDevice))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        //then
+        Device changedDevice = objectMapper.readValue(mvcResultAfterUpdate.getResponse().getContentAsString(),Device.class);
+        assertThat(changedDevice.getId()).isEqualTo(originalDevice.getId());
+        assertThat(changedDevice.getProducer()).isEqualTo("Nokia");
+        assertThat(changedDevice.getModel()).isEqualTo("3310i");
+    }
+
 }
