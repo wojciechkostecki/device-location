@@ -20,6 +20,8 @@ import pl.wojciechkostecki.devicelocation.repository.DeviceRepository;
 
 import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username = "test", roles = {"ADMIN", "USER"})
@@ -54,13 +56,43 @@ class DeviceControllerIT {
 
         //then
         int dbSizeAfter = deviceRepository.findAll().size();
-        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize+1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize+1);
 
         Device savedDevice = deviceRepository.getById(objectMapper.readValue
                 (mvcResult.getResponse().getContentAsString(),Device.class).getId());
 
-        Assertions.assertThat(savedDevice).isNotNull();
-        Assertions.assertThat(savedDevice.getProducer()).isEqualTo(deviceDTO.getProducer());
-        Assertions.assertThat(savedDevice.getModel()).isEqualTo(deviceDTO.getModel());
+        assertThat(savedDevice).isNotNull();
+        assertThat(savedDevice.getProducer()).isEqualTo(deviceDTO.getProducer());
+        assertThat(savedDevice.getModel()).isEqualTo(deviceDTO.getModel());
     }
+
+    @Test
+    void getAllDevicesTest() throws Exception {
+        //given
+        Device device = new Device();
+        device.setProducer("Apple");
+        device.setModel("Iphone X");
+        deviceRepository.save(device);
+        Device device2 = new Device();
+        device2.setProducer("Lenovo");
+        device2.setModel("Legion 5");
+        deviceRepository.save(device2);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/devices"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        //then
+        Device[] devices = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Device[].class);
+        assertThat(devices).isNotNull();
+        assertThat(devices).hasSize(2);
+        assertThat(devices[0].getProducer()).isEqualTo(device.getProducer());
+        assertThat(devices[0].getModel()).isEqualTo(device.getModel());
+        assertThat(devices[1].getProducer()).isEqualTo(device2.getProducer());
+        assertThat(devices[1].getModel()).isEqualTo(device2.getModel());
+    }
+
+
 }
