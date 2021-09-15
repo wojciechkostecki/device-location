@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.wojciechkostecki.devicelocation.model.Device;
 import pl.wojciechkostecki.devicelocation.model.dto.DeviceDTO;
 import pl.wojciechkostecki.devicelocation.service.DeviceService;
 
@@ -33,29 +32,29 @@ public class DeviceController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Device> createDevice(@Valid @RequestBody DeviceDTO deviceDTO) {
+    public ResponseEntity<DeviceDTO> createDevice(@Valid @RequestBody DeviceDTO deviceDTO) {
         logger.debug("REST request to create Device: {}", deviceDTO);
-        Device savedDevice = deviceService.save(deviceDTO);
+        DeviceDTO savedDevice = deviceService.save(deviceDTO);
         return new ResponseEntity<>(savedDevice, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public ResponseEntity<List<Device>> getAllDevices() {
+    public ResponseEntity<List<DeviceDTO>> getAllDevices() {
         logger.debug("REST request to get all Devices");
         return ResponseEntity.ok(deviceService.getAll());
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
-    public ResponseEntity<Device> getDevice(@PathVariable Long id) {
+    public ResponseEntity<DeviceDTO> getDevice(@PathVariable Long id) {
         logger.debug("REST request to get Device: {}", id);
         return ResponseEntity.ok(deviceService.findById(id).get());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Device> updateDevice(@PathVariable Long id, @Valid @RequestBody DeviceDTO deviceDTO) {
+    public ResponseEntity<DeviceDTO> updateDevice(@PathVariable Long id, @Valid @RequestBody DeviceDTO deviceDTO) {
         logger.debug("REST request to update Device: {} with id {}", deviceDTO, id);
         return ResponseEntity.ok(deviceService.updateDevice(id, deviceDTO));
     }

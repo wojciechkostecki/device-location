@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.wojciechkostecki.devicelocation.model.Geolocation;
 import pl.wojciechkostecki.devicelocation.model.dto.GeolocationDTO;
 import pl.wojciechkostecki.devicelocation.service.GeolocationService;
 
@@ -24,8 +23,8 @@ public class GeolocationController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Geolocation> saveGeolocation(@Valid @RequestBody GeolocationDTO geolocationDTO) {
-        Geolocation savedGeolocation = geolocationService.save(geolocationDTO);
+    public ResponseEntity<GeolocationDTO> saveGeolocation(@Valid @RequestBody GeolocationDTO geolocationDTO) {
+        GeolocationDTO savedGeolocation = geolocationService.save(geolocationDTO);
         return new ResponseEntity<>(savedGeolocation, HttpStatus.CREATED);
     }
 }

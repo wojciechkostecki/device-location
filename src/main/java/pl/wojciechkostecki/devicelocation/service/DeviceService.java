@@ -19,23 +19,24 @@ public class DeviceService {
         this.deviceMapper = deviceMapper;
     }
 
-    public Device save(DeviceDTO deviceDTO) {
-        return deviceRepository.save(deviceMapper.toEntity(deviceDTO));
+    public DeviceDTO save(DeviceDTO deviceDTO) {
+        Device device = deviceMapper.toEntity(deviceDTO);
+        return deviceMapper.toDto(deviceRepository.save(device));
     }
 
-    public List<Device> getAll() {
-        return deviceRepository.findAll();
+    public List<DeviceDTO> getAll() {
+        return deviceMapper.toDto(deviceRepository.findAll());
     }
 
-    public Optional<Device> findById(Long id) {
-        return deviceRepository.findById(id);
+    public Optional<DeviceDTO> findById(Long id) {
+        return deviceRepository.findById(id).map(deviceMapper::toDto);
     }
 
-    public Device updateDevice(Long id, DeviceDTO deviceDTO) {
+    public DeviceDTO updateDevice(Long id, DeviceDTO deviceDTO) {
         Device modifiedDevice = deviceRepository.getById(id);
         modifiedDevice.setProducer(deviceDTO.getProducer());
         modifiedDevice.setModel(deviceDTO.getModel());
-        return deviceRepository.save(modifiedDevice);
+        return deviceMapper.toDto(deviceRepository.save(modifiedDevice));
     }
 
     public void delete(Long id) {
