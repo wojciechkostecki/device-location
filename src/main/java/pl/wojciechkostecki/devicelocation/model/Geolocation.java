@@ -26,7 +26,7 @@ public class Geolocation {
     @JsonBackReference
     private Device device;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 }
