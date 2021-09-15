@@ -6,6 +6,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class GeolocationDTO {
+    private Long id;
+
     @NotNull(message = "Device ID is mandatory")
     private Long deviceId;
 

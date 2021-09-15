@@ -8,6 +8,6 @@ import pl.wojciechkostecki.devicelocation.model.dto.GeolocationDTO;
 @Mapper(componentModel = "spring")
 public interface GeolocationMapper extends EntityMapper<GeolocationDTO, Geolocation>{
 
-    @Mapping(target = "device.id",source = "deviceId")
-    Geolocation toEntity(GeolocationDTO geolocationDTO);
+    @Mapping(target = "deviceId",source = "device.id")
+    GeolocationDTO toDto(Geolocation geolocation);
 }

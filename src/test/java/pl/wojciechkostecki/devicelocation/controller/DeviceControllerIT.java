@@ -113,8 +113,6 @@ class DeviceControllerIT {
         assertThat(device.getId()).isEqualTo(newDevice.getId());
         assertThat(device.getProducer()).isEqualTo(newDevice.getProducer());
         assertThat(device.getModel()).isEqualTo(newDevice.getModel());
-        assertThat(device.getProducer()).isEqualTo("Apple");
-        assertThat(device.getModel()).isEqualTo("Iphone 8");
     }
 
     @Test
@@ -135,8 +133,10 @@ class DeviceControllerIT {
         assertThat(originalDevice.getProducer()).isEqualTo(device.getProducer());
         assertThat(originalDevice.getModel()).isEqualTo(device.getModel());
 
-        originalDevice.setProducer("Nokia");
-        originalDevice.setModel("3310i");
+        String currentProducer = "Nokia";
+        String currentModel = "3310i";
+        originalDevice.setProducer(currentProducer);
+        originalDevice.setModel(currentModel);
 
         //when
         MvcResult mvcResultAfterUpdate =mockMvc.perform(MockMvcRequestBuilders.put("/api/devices/" + device.getId())
@@ -149,8 +149,8 @@ class DeviceControllerIT {
         //then
         Device changedDevice = objectMapper.readValue(mvcResultAfterUpdate.getResponse().getContentAsString(),Device.class);
         assertThat(changedDevice.getId()).isEqualTo(originalDevice.getId());
-        assertThat(changedDevice.getProducer()).isEqualTo("Nokia");
-        assertThat(changedDevice.getModel()).isEqualTo("3310i");
+        assertThat(changedDevice.getProducer()).isEqualTo(currentProducer);
+        assertThat(changedDevice.getModel()).isEqualTo(currentModel);
     }
 
     @Test
